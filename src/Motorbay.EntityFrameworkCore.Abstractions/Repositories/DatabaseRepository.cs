@@ -98,6 +98,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         List<RepositoryError> errors = [];
 
         int count = 0;
+        int totalCount = 0;
         foreach (TKey id in ids)
         {
             TEntity? entity = await GetByIdAsync(id, isTracked: true, cancellationToken);
@@ -111,11 +112,23 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
             {
                 errors.Add(RepositoryError.EntityNotFound(id.ToString()));
             }
+
+            totalCount++;
         }
 
-        RepositoryResult getResult = errors.Count == 0
-            ? RepositoryResult.Success
-            : RepositoryResult.PartialSuccess(errors);
+        RepositoryResult getResult;
+        if (errors.Count == 0)
+        {
+            getResult = RepositoryResult.Success;
+        }
+        else if (errors.Count == totalCount)
+        {
+            getResult = RepositoryResult.Failure(errors);
+        }
+        else
+        {
+            getResult = RepositoryResult.PartialSuccess(errors);
+        }
 
         RepositoryResult saveResult = await SaveChangesAsync(expectedWritten: count, cancellationToken);
 
