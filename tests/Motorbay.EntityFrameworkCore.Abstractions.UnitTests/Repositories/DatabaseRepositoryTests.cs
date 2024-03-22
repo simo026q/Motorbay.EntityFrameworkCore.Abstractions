@@ -24,6 +24,52 @@ public class DatabaseRepositoryTests
     }
 
     [Fact]
+    public async Task GetByIdAsync_WhenTrackedIsFalse_DontUpdateEntity()
+    {
+        // Arrange
+        _dbContext.Database.EnsureDeleted();
+        var entity = new GuidUniqueEntity()
+        {
+            Name = "Initial"
+        };
+
+        _dbContext.GuidUniqueEntities.Add(entity);
+        await _dbContext.SaveChangesAsync();
+
+        // Act
+        var result = await _guidUniqueEntityRepository.GetByIdAsync(entity.Id, isTracked: false);
+        result.Name = "New";
+        await _dbContext.SaveChangesAsync();
+
+        // Assert
+        Assert.NotEqual(entity.Name, result.Name);
+        Assert.NotEqual(entity, result);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_WhenTrackedIsTrue_UpdateEntity()
+    {
+        // Arrange
+        _dbContext.Database.EnsureDeleted();
+        var entity = new GuidUniqueEntity()
+        {
+            Name = "Initial"
+        };
+
+        _dbContext.GuidUniqueEntities.Add(entity);
+        await _dbContext.SaveChangesAsync();
+
+        // Act
+        var result = await _guidUniqueEntityRepository.GetByIdAsync(entity.Id, isTracked: true);
+        result.Name = "New";
+        await _dbContext.SaveChangesAsync();
+
+        // Assert
+        Assert.Equal(entity.Name, result.Name);
+        Assert.Equal(entity, result);
+    }
+
+    [Fact]
     public async Task CreateAsync_WhenEntityIsValid_CreatesEntity()
     {
         // Arrange
