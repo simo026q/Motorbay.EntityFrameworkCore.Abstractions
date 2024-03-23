@@ -43,8 +43,31 @@ public readonly struct RepositoryResult
         return new RepositoryResult(state, [..Errors.Concat(other.Errors)]);
     }
 
+    /// <summary>
+    /// Creates a new <see cref="RepositoryResult"/> representing a failed operation.
+    /// </summary>
+    /// <param name="errors">A collection of <see cref="RepositoryError"/> encountered during the operation.</param>
+    /// <returns>A new <see cref="RepositoryResult"/> representing a failed operation.</returns>
     public static RepositoryResult Failure(IReadOnlyCollection<RepositoryError> errors) => new(RepositoryResultState.Failure, errors);
+    
+    /// <summary>
+    /// Creates a new <see cref="RepositoryResult"/> representing a failed operation.
+    /// </summary>
+    /// <param name="error">The <see cref="RepositoryError"/> encountered during the operation.</param>
+    /// <returns>A new <see cref="RepositoryResult"/> representing a failed operation.</returns>
     public static RepositoryResult Failure(RepositoryError error) => Failure([error]);
+
+    /// <summary>
+    /// Creates a new <see cref="RepositoryResult"/> representing a partially successful operation.
+    /// </summary>
+    /// <param name="errors">A collection of <see cref="RepositoryError"/> encountered during the operation.</param>
+    /// <returns>A new <see cref="RepositoryResult"/> representing a failed operation.</returns>
     public static RepositoryResult PartialSuccess(IReadOnlyCollection<RepositoryError> errors) => new(RepositoryResultState.PartialSuccess, errors);
+    
+    /// <summary>
+    /// Creates a new <see cref="RepositoryResult"/> representing a partially successful operation.
+    /// </summary>
+    /// <param name="error">The <see cref="RepositoryError"/> encountered during the operation.</param>
+    /// <returns>A new <see cref="RepositoryResult"/> representing a failed operation.</returns>
     public static RepositoryResult PartialSuccess(RepositoryError error) => new(RepositoryResultState.PartialSuccess, [error]);
 }
