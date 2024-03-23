@@ -65,7 +65,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
 
         if (entity is null)
         {
-            return RepositoryResult.Failure(RepositoryError.EntityNotFound(id.ToString()));
+            return RepositoryResult.Failure(RepositoryErrorDescriptor.EntityNotFound<TKey, TEntity>(id));
         }
 
         return await DeleteAsync(entity, cancellationToken);
@@ -110,7 +110,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
             }
             else
             {
-                errors.Add(RepositoryError.EntityNotFound(id.ToString()));
+                errors.Add(RepositoryErrorDescriptor.EntityNotFound<TKey, TEntity>(id));
             }
 
             totalCount++;

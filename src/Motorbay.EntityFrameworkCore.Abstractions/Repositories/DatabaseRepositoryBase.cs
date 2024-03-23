@@ -23,9 +23,18 @@ public abstract class DatabaseRepositoryBase<TKey, TEntity>(DbContext context)
         {
             int written = await _context.SaveChangesAsync(cancellationToken);
 
-            return written == expectedWritten
-                ? RepositoryResult.Success
-                : RepositoryResult.Failure(RepositoryError.UnexpectedWriteCount);
+            if (written == 0)
+            {
+                return RepositoryResult.Failure(RepositoryErrorDescriptor.NothingWrittenToDatabase());
+            }
+            else if (written != expectedWritten)
+            {
+                return RepositoryResult.Failure(RepositoryErrorDescriptor.UnexpectedDatabaseWriteCount(expectedWritten, written));
+            }
+            else
+            {
+                return RepositoryResult.Success;
+            }
         }
         catch (DbUpdateException ex)
         {
