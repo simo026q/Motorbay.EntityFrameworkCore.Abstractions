@@ -1,12 +1,28 @@
 ﻿namespace Motorbay.EntityFrameworkCore.Abstractions.Repositories;
 
+/// <summary>
+/// Holds the outcome of a repository operation, including the operation's state and any errors.
+/// </summary>
 public readonly struct RepositoryResult
 {
+    /// <summary>
+    /// Represents a successful operation without errors.
+    /// </summary>
     public static readonly RepositoryResult Success = new(RepositoryResultState.Success, []);
 
+    /// <summary>
+    /// The state of the repository operation.
+    /// </summary>
     public RepositoryResultState State { get; }
+
+    /// <summary>
+    /// A collection of errors encountered during the operation, if any.
+    /// </summary>
     public IReadOnlyCollection<RepositoryError> Errors { get; }
 
+    /// <summary>
+    /// Indicates whether the operation was successful.
+    /// </summary>
     public bool Succeeded => State == RepositoryResultState.Success;
 
     private RepositoryResult(RepositoryResultState state, IReadOnlyCollection<RepositoryError> errors)
@@ -15,6 +31,11 @@ public readonly struct RepositoryResult
         Errors = errors;
     }
 
+    /// <summary>
+    /// Combines the current result with another, aggregating their states and errors.
+    /// </summary>
+    /// <param name="other">The other repository result to combine with this one.</param>
+    /// <returns>A new <see cref="RepositoryResult"/> reflecting the combination of both results.</returns>
     public RepositoryResult Aggregate(RepositoryResult other)
     {
         var state = (RepositoryResultState)Math.Max((int)State, (int)other.State);

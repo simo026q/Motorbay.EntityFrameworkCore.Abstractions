@@ -2,14 +2,17 @@
 
 namespace Motorbay.EntityFrameworkCore.Abstractions.Repositories;
 
+/// <inheritdoc />
 public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     : ReadOnlyDatabaseRepository<TKey, TEntity>(context), IRepository<TKey, TEntity>
     where TKey : IEquatable<TKey>
     where TEntity : class, IUniqueEntity<TKey>
 {
+    /// <inheritdoc />
     public virtual async Task<IList<TEntity>> GetAllAsync(bool isTracked, CancellationToken cancellationToken = default)
         => await GetQueryable(isTracked).ToListAsync(cancellationToken);
 
+    /// <inheritdoc />
     public virtual async Task<TEntity?> GetByIdAsync(TKey id, bool isTracked, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));
@@ -19,6 +22,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
             : await GetQueryable(isTracked: false).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual async Task<RepositoryResult> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
@@ -28,6 +32,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         return await SaveChangesAsync(expectedWritten: 1, cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual async Task<RepositoryResult> CreateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
@@ -48,6 +53,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         return await SaveChangesAsync(expectedWritten: count, cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual Task<RepositoryResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
@@ -57,6 +63,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         return SaveChangesAsync(expectedWritten: 1, cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual async Task<RepositoryResult> DeleteByIdAsync(TKey id, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));
@@ -71,6 +78,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         return await DeleteAsync(entity, cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual Task<RepositoryResult> DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
@@ -91,6 +99,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         return SaveChangesAsync(expectedWritten: count, cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual async Task<RepositoryResult> DeleteRangeByIdAsync(IEnumerable<TKey> ids, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(ids, nameof(ids));
@@ -135,6 +144,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         return getResult.Aggregate(saveResult);
     }
 
+    /// <inheritdoc />
     public virtual Task<RepositoryResult> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
@@ -144,6 +154,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         return SaveChangesAsync(expectedWritten: 1, cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual Task<RepositoryResult> UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
