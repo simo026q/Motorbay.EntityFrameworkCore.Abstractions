@@ -58,7 +58,7 @@ public abstract class DatabaseRepositoryBase<TKey, TEntity>(DbContext context)
         }
         catch (DbUpdateException ex)
         {
-            return RepositoryResult.Failure(ex);
+            return RepositoryResult.Failure(RepositoryErrorDescriptor.DatabaseUpdateFailure(ex));
         }
     }
 }

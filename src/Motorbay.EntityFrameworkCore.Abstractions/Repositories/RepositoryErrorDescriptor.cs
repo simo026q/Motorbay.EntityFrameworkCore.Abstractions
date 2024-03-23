@@ -1,4 +1,6 @@
-﻿namespace Motorbay.EntityFrameworkCore.Abstractions.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Motorbay.EntityFrameworkCore.Abstractions.Repositories;
 
 internal static class RepositoryErrorDescriptor
 {
@@ -25,6 +27,29 @@ internal static class RepositoryErrorDescriptor
         return new RepositoryError(
             nameof(UnexpectedDatabaseWriteCount),
             string.Format(Resources.UnexpectedDatabaseWriteCount, expected, written)
+        );
+    }
+
+    public static RepositoryError DatabaseConcurrencyFailure(DbUpdateConcurrencyException exception)
+    {
+        return new RepositoryError(
+            nameof(DatabaseConcurrencyFailure),
+            exception.Message,
+            exception
+        );
+    }
+
+    public static RepositoryError DatabaseUpdateFailure(DbUpdateException exception)
+    {
+        if (exception is DbUpdateConcurrencyException concurrencyException)
+        {
+            return DatabaseConcurrencyFailure(concurrencyException);
+        }
+
+        return new RepositoryError(
+            nameof(DatabaseUpdateFailure),
+            exception.Message,
+            exception
         );
     }
 }

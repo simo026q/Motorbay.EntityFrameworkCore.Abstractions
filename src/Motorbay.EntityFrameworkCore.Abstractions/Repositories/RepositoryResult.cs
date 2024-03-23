@@ -45,8 +45,6 @@ public readonly struct RepositoryResult
 
     public static RepositoryResult Failure(IReadOnlyCollection<RepositoryError> errors) => new(RepositoryResultState.Failure, errors);
     public static RepositoryResult Failure(RepositoryError error) => Failure([error]);
-    public static RepositoryResult Failure(Exception exception) => Failure(RepositoryError.FromException(exception));
     public static RepositoryResult PartialSuccess(IReadOnlyCollection<RepositoryError> errors) => new(RepositoryResultState.PartialSuccess, errors);
     public static RepositoryResult PartialSuccess(RepositoryError error) => new(RepositoryResultState.PartialSuccess, [error]);
-    public static RepositoryResult PartialSuccess(Exception exception) => PartialSuccess(RepositoryError.FromException(exception));
 }
