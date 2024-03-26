@@ -53,7 +53,7 @@ public class TimestampedDbContextTests
         // Arrange
         var entity = new TestEntity();
 
-        var time = DateTimeOffset.UtcNow;
+        DateTimeOffset time = DateTimeOffset.UtcNow;
         _timeProvider.SetUtcNow(time);
 
         // Act
@@ -74,13 +74,13 @@ public class TimestampedDbContextTests
             Name = "Created"
         };
 
-        var createdAt = DateTimeOffset.UtcNow;
+        DateTimeOffset createdAt = DateTimeOffset.UtcNow;
         _timeProvider.SetUtcNow(createdAt);
 
         _context.TestEntities.Add(entity);
         await _context.SaveChangesAsync();
 
-        var lastUpdatedAt = DateTimeOffset.UtcNow.AddHours(1);
+        DateTimeOffset lastUpdatedAt = DateTimeOffset.UtcNow.AddHours(1);
         _timeProvider.SetUtcNow(lastUpdatedAt);
 
         // Act
