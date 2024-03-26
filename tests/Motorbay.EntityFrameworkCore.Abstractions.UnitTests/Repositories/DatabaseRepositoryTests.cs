@@ -37,7 +37,7 @@ public class DatabaseRepositoryTests
         await _dbContext.SaveChangesAsync();
 
         // Act
-        var result = await _guidUniqueEntityRepository.GetByIdAsync(entity.Id, isTracked: false);
+        GuidUniqueEntity result = (await _guidUniqueEntityRepository.GetByIdAsync(entity.Id, isTracked: false))!;
         result.Name = "New";
         await _dbContext.SaveChangesAsync();
 
@@ -60,7 +60,7 @@ public class DatabaseRepositoryTests
         await _dbContext.SaveChangesAsync();
 
         // Act
-        var result = await _guidUniqueEntityRepository.GetByIdAsync(entity.Id, isTracked: true);
+        GuidUniqueEntity result = (await _guidUniqueEntityRepository.GetByIdAsync(entity.Id, isTracked: true))!;
         result.Name = "New";
         await _dbContext.SaveChangesAsync();
 
@@ -77,7 +77,7 @@ public class DatabaseRepositoryTests
         var entity = new GuidUniqueEntity();
 
         // Act
-        var result = await _guidUniqueEntityRepository.CreateAsync(entity);
+        RepositoryResult result = await _guidUniqueEntityRepository.CreateAsync(entity);
 
         // Assert
         Assert.Equal(RepositoryResultState.Success, result.State);
@@ -99,15 +99,15 @@ public class DatabaseRepositoryTests
     {
         // Arrange
         _dbContext.Database.EnsureDeleted();
-        var entities = new[]
-        {
+        GuidUniqueEntity[] entities =
+        [
             new GuidUniqueEntity(),
             new GuidUniqueEntity(),
             new GuidUniqueEntity()
-        };
+        ];
 
         // Act
-        var result = await _guidUniqueEntityRepository.CreateRangeAsync(entities);
+        RepositoryResult result = await _guidUniqueEntityRepository.CreateRangeAsync(entities);
 
         // Assert
         Assert.Equal(RepositoryResultState.Success, result.State);
@@ -134,7 +134,7 @@ public class DatabaseRepositoryTests
         await _dbContext.SaveChangesAsync();
 
         // Act
-        var result = await _guidUniqueEntityRepository.DeleteAsync(entity);
+        RepositoryResult result = await _guidUniqueEntityRepository.DeleteAsync(entity);
 
         // Assert
         Assert.Equal(RepositoryResultState.Success, result.State);
@@ -161,7 +161,7 @@ public class DatabaseRepositoryTests
         await _dbContext.SaveChangesAsync();
 
         // Act
-        var result = await _guidUniqueEntityRepository.DeleteByIdAsync(entity.Id);
+        RepositoryResult result = await _guidUniqueEntityRepository.DeleteByIdAsync(entity.Id);
 
         // Assert
         Assert.Equal(RepositoryResultState.Success, result.State);
@@ -176,7 +176,7 @@ public class DatabaseRepositoryTests
         var entity = new GuidUniqueEntity();
 
         // Act
-        var result = await _guidUniqueEntityRepository.DeleteByIdAsync(entity.Id);
+        RepositoryResult result = await _guidUniqueEntityRepository.DeleteByIdAsync(entity.Id);
 
         // Assert
         Assert.Equal(RepositoryResultState.Failure, result.State);
@@ -188,17 +188,17 @@ public class DatabaseRepositoryTests
     {
         // Arrange
         _dbContext.Database.EnsureDeleted();
-        var entities = new[]
-        {
+        GuidUniqueEntity[] entities =
+        [
             new GuidUniqueEntity(),
             new GuidUniqueEntity(),
             new GuidUniqueEntity()
-        };
+        ];
         _dbContext.GuidUniqueEntities.AddRange(entities);
         await _dbContext.SaveChangesAsync();
 
         // Act
-        var result = await _guidUniqueEntityRepository.DeleteRangeAsync(entities);
+        RepositoryResult result = await _guidUniqueEntityRepository.DeleteRangeAsync(entities);
 
         // Assert
         Assert.Equal(RepositoryResultState.Success, result.State);
@@ -220,17 +220,17 @@ public class DatabaseRepositoryTests
     {
         // Arrange
         _dbContext.Database.EnsureDeleted();
-        var entities = new[]
-        {
+        GuidUniqueEntity[] entities =
+        [
             new GuidUniqueEntity(),
             new GuidUniqueEntity(),
             new GuidUniqueEntity()
-        };
+        ];
         _dbContext.GuidUniqueEntities.AddRange(entities);
         await _dbContext.SaveChangesAsync();
 
         // Act
-        var result = await _guidUniqueEntityRepository.DeleteRangeByIdAsync(entities.Select(e => e.Id));
+        RepositoryResult result = await _guidUniqueEntityRepository.DeleteRangeByIdAsync(entities.Select(e => e.Id));
 
         // Assert
         Assert.Equal(RepositoryResultState.Success, result.State);
@@ -248,7 +248,7 @@ public class DatabaseRepositoryTests
         var entities = Enumerable.Range(0, count).Select(_ => new GuidUniqueEntity()).ToList();
 
         // Act
-        var result = await _guidUniqueEntityRepository.DeleteRangeByIdAsync(entities.Select(e => e.Id));
+        RepositoryResult result = await _guidUniqueEntityRepository.DeleteRangeByIdAsync(entities.Select(e => e.Id));
 
         // Assert
         Assert.Equal(RepositoryResultState.Failure, result.State);
@@ -266,7 +266,7 @@ public class DatabaseRepositoryTests
 
         // Act
         entity.Name = "Updated";
-        var result = await _guidUniqueEntityRepository.UpdateAsync(entity);
+        RepositoryResult result = await _guidUniqueEntityRepository.UpdateAsync(entity);
 
         // Assert
         Assert.Equal(RepositoryResultState.Success, result.State);
@@ -288,12 +288,12 @@ public class DatabaseRepositoryTests
     {
         // Arrange
         _dbContext.Database.EnsureDeleted();
-        var entities = new[]
-        {
+        GuidUniqueEntity[] entities =
+        [
             new GuidUniqueEntity(),
             new GuidUniqueEntity(),
             new GuidUniqueEntity()
-        };
+        ];
         _dbContext.GuidUniqueEntities.AddRange(entities);
         await _dbContext.SaveChangesAsync();
 
@@ -303,7 +303,7 @@ public class DatabaseRepositoryTests
             entity.Name = "Updated";
         }
 
-        var result = await _guidUniqueEntityRepository.UpdateRangeAsync(entities);
+        RepositoryResult result = await _guidUniqueEntityRepository.UpdateRangeAsync(entities);
 
         // Assert
         Assert.Equal(RepositoryResultState.Success, result.State);
