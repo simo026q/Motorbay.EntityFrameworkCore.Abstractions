@@ -2,14 +2,17 @@
 
 namespace Motorbay.EntityFrameworkCore.Abstractions.Repositories;
 
+/// <inheritdoc />
 public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     : ReadOnlyDatabaseRepository<TKey, TEntity>(context), IRepository<TKey, TEntity>
     where TKey : IEquatable<TKey>
     where TEntity : class, IUniqueEntity<TKey>
 {
+    /// <inheritdoc />
     public virtual async Task<IList<TEntity>> GetAllAsync(bool isTracked, CancellationToken cancellationToken = default)
         => await GetQueryable(isTracked).ToListAsync(cancellationToken);
 
+    /// <inheritdoc />
     public virtual async Task<TEntity?> GetByIdAsync(TKey id, bool isTracked, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));
@@ -19,6 +22,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
             : await GetQueryable(isTracked: false).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual async Task<RepositoryResult> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
@@ -28,6 +32,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         return await SaveChangesAsync(expectedWritten: 1, cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual async Task<RepositoryResult> CreateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
@@ -48,6 +53,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         return await SaveChangesAsync(expectedWritten: count, cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual Task<RepositoryResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
@@ -57,6 +63,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         return SaveChangesAsync(expectedWritten: 1, cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual async Task<RepositoryResult> DeleteByIdAsync(TKey id, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));
@@ -65,12 +72,13 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
 
         if (entity is null)
         {
-            return RepositoryResult.Failure(RepositoryError.EntityNotFound(id.ToString()));
+            return RepositoryResult.Failure(RepositoryErrorDescriptor.EntityNotFound<TKey, TEntity>(id));
         }
 
         return await DeleteAsync(entity, cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual Task<RepositoryResult> DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
@@ -91,13 +99,14 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         return SaveChangesAsync(expectedWritten: count, cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual async Task<RepositoryResult> DeleteRangeByIdAsync(IEnumerable<TKey> ids, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(ids, nameof(ids));
 
         List<RepositoryError> errors = [];
 
-        int count = 0;
+        int updateCount = 0;
         int totalCount = 0;
         foreach (TKey id in ids)
         {
@@ -105,36 +114,44 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
 
             if (entity is not null)
             {
-                count++;
+                updateCount++;
                 Entities.Remove(entity);
             }
             else
             {
-                errors.Add(RepositoryError.EntityNotFound(id.ToString()));
+                errors.Add(RepositoryErrorDescriptor.EntityNotFound<TKey, TEntity>(id));
             }
 
             totalCount++;
         }
 
-        RepositoryResult getResult;
+        RepositoryResult getEntityResult;
         if (errors.Count == 0)
         {
-            getResult = RepositoryResult.Success;
+            getEntityResult = RepositoryResult.Success;
         }
         else if (errors.Count == totalCount)
         {
-            getResult = RepositoryResult.Failure(errors);
+            getEntityResult = RepositoryResult.Failure(errors);
         }
         else
         {
-            getResult = RepositoryResult.PartialSuccess(errors);
+            getEntityResult = RepositoryResult.PartialSuccess(errors);
         }
 
-        RepositoryResult saveResult = await SaveChangesAsync(expectedWritten: count, cancellationToken);
+        if (updateCount > 0)
+        {
+            RepositoryResult saveResult = await SaveChangesAsync(expectedWritten: updateCount, cancellationToken);
 
-        return getResult.Aggregate(saveResult);
+            return getEntityResult.Aggregate(saveResult);
+        }
+        else
+        {
+            return getEntityResult;
+        }
     }
 
+    /// <inheritdoc />
     public virtual Task<RepositoryResult> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
@@ -144,6 +161,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         return SaveChangesAsync(expectedWritten: 1, cancellationToken);
     }
 
+    /// <inheritdoc />
     public virtual Task<RepositoryResult> UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));

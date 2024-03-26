@@ -2,8 +2,21 @@
 
 namespace Motorbay.EntityFrameworkCore.Abstractions.Extensions;
 
+/// <summary>
+/// Extension methods for <see cref="IRepository{TKey, TEntity}"/>.
+/// </summary>
 public static class RepositoryExtensions
 {
+    /// <summary>
+    /// Tries to create an entity if it does not exist.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the unique identifier.</typeparam>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <param name="repository">The repository to create the entity in.</param>
+    /// <param name="key">The unique identifier of the entity to create.</param>
+    /// <param name="entityFactory">A factory function to create the entity.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+    /// <returns>A <see cref="Task"/> that represents the asynchronous operation, containing a <see cref="RepositoryResult"/> that represents the result of the operation.</returns>
     public static async Task<RepositoryResult> TryCreateAsync<TKey, TEntity>(this IRepository<TKey, TEntity> repository, TKey key, Func<TKey, TEntity> entityFactory, CancellationToken cancellationToken = default)
         where TKey : IEquatable<TKey>
         where TEntity : class, IUniqueEntity<TKey>
@@ -22,6 +35,15 @@ public static class RepositoryExtensions
         return await repository.CreateAsync(entity, cancellationToken);
     }
 
+    /// <summary>
+    /// Creates or updates an entity.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the unique identifier.</typeparam>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <param name="repository">The repository to create or update the entity in.</param>
+    /// <param name="entity">The entity to create or update.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
+    /// <returns>A <see cref="Task"/> that represents the asynchronous operation, containing a <see cref="RepositoryResult"/> that represents the result of the operation.</returns>
     public static async Task<RepositoryResult> CreateOrUpdateAsync<TKey, TEntity>(this IRepository<TKey, TEntity> repository, TEntity entity, CancellationToken cancellationToken = default)
         where TKey : IEquatable<TKey>
         where TEntity : class, IUniqueEntity<TKey>
