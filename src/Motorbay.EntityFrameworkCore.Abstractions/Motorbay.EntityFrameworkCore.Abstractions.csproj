@@ -17,6 +17,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <AssemblyVersion></AssemblyVersion>
     <Version>1.0.0-beta.2</Version>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
