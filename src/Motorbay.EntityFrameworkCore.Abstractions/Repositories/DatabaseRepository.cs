@@ -106,7 +106,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
 
         List<RepositoryError> errors = [];
 
-        int count = 0;
+        int updateCount = 0;
         int totalCount = 0;
         foreach (TKey id in ids)
         {
@@ -114,7 +114,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
 
             if (entity is not null)
             {
-                count++;
+                updateCount++;
                 Entities.Remove(entity);
             }
             else
@@ -125,23 +125,30 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
             totalCount++;
         }
 
-        RepositoryResult getResult;
+        RepositoryResult getEntityResult;
         if (errors.Count == 0)
         {
-            getResult = RepositoryResult.Success;
+            getEntityResult = RepositoryResult.Success;
         }
         else if (errors.Count == totalCount)
         {
-            getResult = RepositoryResult.Failure(errors);
+            getEntityResult = RepositoryResult.Failure(errors);
         }
         else
         {
-            getResult = RepositoryResult.PartialSuccess(errors);
+            getEntityResult = RepositoryResult.PartialSuccess(errors);
         }
 
-        RepositoryResult saveResult = await SaveChangesAsync(expectedWritten: count, cancellationToken);
+        if (updateCount > 0)
+        {
+            RepositoryResult saveResult = await SaveChangesAsync(expectedWritten: updateCount, cancellationToken);
 
-        return getResult.Aggregate(saveResult);
+            return getEntityResult.Aggregate(saveResult);
+        }
+        else
+        {
+            return getEntityResult;
+        }
     }
 
     /// <inheritdoc />
