@@ -37,13 +37,13 @@ public class DatabaseRepositoryTests
         await _dbContext.SaveChangesAsync();
 
         // Act
-        GuidUniqueEntity result = (await _guidUniqueEntityRepository.GetByIdAsync(entity.Id, isTracked: false))!;
-        result.Name = "New";
+        RepositoryResult<GuidUniqueEntity> result = await _guidUniqueEntityRepository.GetByIdAsync(entity.Id, isTracked: false);
+        result.Value.Name = "New";
         await _dbContext.SaveChangesAsync();
 
         // Assert
-        Assert.NotEqual(entity.Name, result.Name);
-        Assert.NotEqual(entity, result);
+        Assert.NotEqual(entity.Name, result.Value.Name);
+        Assert.NotEqual(entity, result.Value);
     }
 
     [Fact]
@@ -60,13 +60,13 @@ public class DatabaseRepositoryTests
         await _dbContext.SaveChangesAsync();
 
         // Act
-        GuidUniqueEntity result = (await _guidUniqueEntityRepository.GetByIdAsync(entity.Id, isTracked: true))!;
-        result.Name = "New";
+        RepositoryResult<GuidUniqueEntity> result = await _guidUniqueEntityRepository.GetByIdAsync(entity.Id, isTracked: true);
+        result.Value.Name = "New";
         await _dbContext.SaveChangesAsync();
 
         // Assert
-        Assert.Equal(entity.Name, result.Name);
-        Assert.Equal(entity, result);
+        Assert.Equal(entity.Name, result.Value.Name);
+        Assert.Equal(entity, result.Value);
     }
 
     [Fact]
