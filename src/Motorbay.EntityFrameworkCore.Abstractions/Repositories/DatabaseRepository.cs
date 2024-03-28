@@ -9,6 +9,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     where TEntity : class, IUniqueEntity<TKey>
 {
     /// <inheritdoc />
+    /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>
     public virtual async Task<RepositoryResult<List<TEntity>>> GetAllAsync(bool isTracked, CancellationToken cancellationToken = default)
     {
         List<TEntity> entities = await GetQueryable(isTracked).ToListAsync(cancellationToken);
@@ -17,6 +18,8 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     }
 
     /// <inheritdoc />
+    /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
     public virtual async Task<RepositoryResult<TEntity>> GetByIdAsync(TKey id, bool isTracked, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));
@@ -31,6 +34,8 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     }
 
     /// <inheritdoc />
+    /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="entity"/> is <see langword="null"/>.</exception>
     public virtual async Task<RepositoryResult> CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
@@ -41,6 +46,8 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     }
 
     /// <inheritdoc />
+    /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="entities"/> is <see langword="null"/>.</exception>
     public virtual async Task<RepositoryResult> CreateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
@@ -62,6 +69,8 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     }
 
     /// <inheritdoc />
+    /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="entity"/> is <see langword="null"/>.</exception>
     public virtual Task<RepositoryResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
@@ -72,6 +81,8 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     }
 
     /// <inheritdoc />
+    /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
     public virtual async Task<RepositoryResult> DeleteByIdAsync(TKey id, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));
@@ -87,6 +98,8 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     }
 
     /// <inheritdoc />
+    /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="entities"/> is <see langword="null"/>.</exception>
     public virtual Task<RepositoryResult> DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));
@@ -108,6 +121,8 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     }
 
     /// <inheritdoc />
+    /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="ids"/> is <see langword="null"/>.</exception>
     public virtual async Task<RepositoryResult> DeleteRangeByIdAsync(IEnumerable<TKey> ids, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(ids, nameof(ids));
@@ -160,6 +175,8 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     }
 
     /// <inheritdoc />
+    /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="entity"/> is <see langword="null"/>.</exception>
     public virtual Task<RepositoryResult> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entity, nameof(entity));
@@ -170,6 +187,8 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     }
 
     /// <inheritdoc />
+    /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="entities"/> is <see langword="null"/>.</exception>
     public virtual Task<RepositoryResult> UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entities, nameof(entities));

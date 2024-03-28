@@ -10,8 +10,13 @@ public abstract class ReadOnlyDatabaseRepository<TKey, TEntity>(DbContext contex
 {
     /// <inheritdoc />
     /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>
-    public virtual Task<bool> ExistsAsync(TKey id, CancellationToken cancellationToken = default) 
-        => Entities.AnyAsync(e => e.Id.Equals(id), cancellationToken);
+    /// <exception cref="ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
+    public virtual Task<bool> ExistsAsync(TKey id, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(id, nameof(id));
+
+        return Entities.AnyAsync(e => e.Id.Equals(id), cancellationToken);
+    }
 
     /// <inheritdoc />
     /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>
@@ -24,8 +29,11 @@ public abstract class ReadOnlyDatabaseRepository<TKey, TEntity>(DbContext contex
 
     /// <inheritdoc />
     /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
     public virtual async Task<RepositoryResult<TEntity>> GetByIdAsync(TKey id, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(id, nameof(id));
+
         TEntity? entity = await Entities.FindAsync([id], cancellationToken);
 
         return entity is not null

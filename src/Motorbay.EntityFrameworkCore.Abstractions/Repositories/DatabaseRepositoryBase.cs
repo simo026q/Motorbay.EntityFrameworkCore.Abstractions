@@ -37,6 +37,7 @@ public abstract class DatabaseRepositoryBase<TKey, TEntity>(DbContext context)
     /// <param name="expectedWritten">The expected number of entities written to the database.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
     /// <returns>A <see cref="RepositoryResult"/> that represents the result of the operation.</returns>
+    /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was canceled.</exception>
     protected virtual async Task<RepositoryResult> SaveChangesAsync(int expectedWritten, CancellationToken cancellationToken)
     {
         try
