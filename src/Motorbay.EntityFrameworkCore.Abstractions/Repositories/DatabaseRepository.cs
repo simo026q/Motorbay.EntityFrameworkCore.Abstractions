@@ -9,17 +9,25 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     where TEntity : class, IUniqueEntity<TKey>
 {
     /// <inheritdoc />
-    public virtual async Task<IList<TEntity>> GetAllAsync(bool isTracked, CancellationToken cancellationToken = default)
-        => await GetQueryable(isTracked).ToListAsync(cancellationToken);
+    public virtual async Task<RepositoryResult<List<TEntity>>> GetAllAsync(bool isTracked, CancellationToken cancellationToken = default)
+    {
+        List<TEntity> entities = await GetQueryable(isTracked).ToListAsync(cancellationToken);
+
+        return RepositoryResult<List<TEntity>>.Success(entities);
+    }
 
     /// <inheritdoc />
-    public virtual async Task<TEntity?> GetByIdAsync(TKey id, bool isTracked, CancellationToken cancellationToken = default)
+    public virtual async Task<RepositoryResult<TEntity>> GetByIdAsync(TKey id, bool isTracked, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));
 
-        return isTracked
+        TEntity? entity = isTracked
             ? await Entities.FindAsync([id], cancellationToken)
             : await GetQueryable(isTracked: false).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+
+        return entity is not null
+            ? RepositoryResult<TEntity>.Success(entity)
+            : RepositoryResult<TEntity>.Failure(RepositoryErrorDescriptor.EntityNotFound<TKey, TEntity>(id));
     }
 
     /// <inheritdoc />
@@ -68,7 +76,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));
 
-        TEntity? entity = await GetByIdAsync(id, isTracked: true, cancellationToken);
+        var entity = (TEntity?)await GetByIdAsync(id, isTracked: true, cancellationToken);
 
         if (entity is null)
         {
@@ -110,7 +118,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context)
         int totalCount = 0;
         foreach (TKey id in ids)
         {
-            TEntity? entity = await GetByIdAsync(id, isTracked: true, cancellationToken);
+            var entity = (TEntity?)await GetByIdAsync(id, isTracked: true, cancellationToken);
 
             if (entity is not null)
             {

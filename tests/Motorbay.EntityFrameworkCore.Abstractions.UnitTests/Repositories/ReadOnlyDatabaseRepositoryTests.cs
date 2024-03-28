@@ -34,11 +34,12 @@ public class ReadOnlyDatabaseRepositoryTests
         await _dbContext.SaveChangesAsync();
 
         // Act
-        var result = await _guidUniqueEntityRepository.GetByIdAsync(entity.Id);
+        RepositoryResult<GuidUniqueEntity> result = await _guidUniqueEntityRepository.GetByIdAsync(entity.Id);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(entity, result);
+        Assert.True(result.Succeeded);
+        Assert.Equal(entity, result.Value);
     }
 
     [Fact]
@@ -49,10 +50,13 @@ public class ReadOnlyDatabaseRepositoryTests
         var entity = new GuidUniqueEntity();
 
         // Act
-        var result = await _guidUniqueEntityRepository.GetByIdAsync(entity.Id);
+        RepositoryResult<GuidUniqueEntity> result = await _guidUniqueEntityRepository.GetByIdAsync(entity.Id);
 
         // Assert
-        Assert.Null(result);
+        Assert.NotNull(result);
+        Assert.False(result.Succeeded);
+        Assert.Equal(RepositoryResultState.Failure, result.State);
+        Assert.Throws<InvalidOperationException>(() => _ = result.Value);
     }
 
     [Fact]
@@ -67,10 +71,13 @@ public class ReadOnlyDatabaseRepositoryTests
         await _dbContext.SaveChangesAsync();
 
         // Act
-        var result = await _guidUniqueEntityRepository.GetAllAsync();
+        RepositoryResult<List<GuidUniqueEntity>> result = await _guidUniqueEntityRepository.GetAllAsync();
 
         // Assert
-        Assert.Equal(2, result.Count);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
+        Assert.NotEmpty(result.Value);
+        Assert.Equal(2, result.Value.Count);
     }
 
     [Fact]
@@ -80,10 +87,12 @@ public class ReadOnlyDatabaseRepositoryTests
         _dbContext.Database.EnsureDeleted();
 
         // Act
-        var result = await _guidUniqueEntityRepository.GetAllAsync();
+        RepositoryResult<List<GuidUniqueEntity>> result = await _guidUniqueEntityRepository.GetAllAsync();
 
         // Assert
-        Assert.Empty(result);
+        Assert.NotNull(result);
+        Assert.True(result.Succeeded);
+        Assert.Empty(result.Value);
     }
 
     [Fact]
@@ -97,7 +106,7 @@ public class ReadOnlyDatabaseRepositoryTests
         await _dbContext.SaveChangesAsync();
 
         // Act
-        var result = await _guidUniqueEntityRepository.ExistsAsync(entity.Id);
+        bool result = await _guidUniqueEntityRepository.ExistsAsync(entity.Id);
 
         // Assert
         Assert.True(result);
@@ -111,7 +120,7 @@ public class ReadOnlyDatabaseRepositoryTests
         var entity = new GuidUniqueEntity();
 
         // Act
-        var result = await _guidUniqueEntityRepository.ExistsAsync(entity.Id);
+        bool result = await _guidUniqueEntityRepository.ExistsAsync(entity.Id);
 
         // Assert
         Assert.False(result);

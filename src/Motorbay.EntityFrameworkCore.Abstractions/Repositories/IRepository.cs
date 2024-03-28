@@ -17,7 +17,7 @@ public interface IRepository<in TKey, TEntity>
     /// <param name="isTracked"><see langword="true"/> to track the entity; otherwise, <see langword="false"/>.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
     /// <returns>A <see cref="Task"/> that represents the asynchronous operation, containing the <typeparamref name="TEntity"/> with the specified <typeparamref name="TKey"/> or <see langword="null"/> if not found.</returns>
-    Task<TEntity?> GetByIdAsync(TKey id, bool isTracked, CancellationToken cancellationToken = default);
+    Task<RepositoryResult<TEntity>> GetByIdAsync(TKey id, bool isTracked, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets all <typeparamref name="TEntity"/>s.
@@ -25,7 +25,7 @@ public interface IRepository<in TKey, TEntity>
     /// <param name="isTracked"><see langword="true"/> to track the entity; otherwise, <see langword="false"/>.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> to observe while waiting for the task to complete.</param>
     /// <returns>A <see cref="Task"/> that represents the asynchronous operation, containing a list of <typeparamref name="TEntity"/>s.</returns>
-    Task<IList<TEntity>> GetAllAsync(bool isTracked, CancellationToken cancellationToken = default);
+    Task<RepositoryResult<List<TEntity>>> GetAllAsync(bool isTracked, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Creates a new <typeparamref name="TEntity"/>.
