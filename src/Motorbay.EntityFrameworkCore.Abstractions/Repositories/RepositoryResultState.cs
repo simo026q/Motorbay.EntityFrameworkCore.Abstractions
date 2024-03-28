@@ -3,6 +3,7 @@
 /// <summary>
 /// Represents the state of a repository result.
 /// </summary>
+/// <remarks>Lower values indicate a more successful state.</remarks>
 public enum RepositoryResultState
 {
     /// <summary>
