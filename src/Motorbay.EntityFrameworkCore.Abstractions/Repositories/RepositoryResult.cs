@@ -93,6 +93,7 @@ public class RepositoryResult
 /// <typeparam name="T">The type of the value returned by the operation.</typeparam>
 public sealed class RepositoryResult<T>
     : RepositoryResult
+    where T : class
 {
     private readonly T? _value;
 
