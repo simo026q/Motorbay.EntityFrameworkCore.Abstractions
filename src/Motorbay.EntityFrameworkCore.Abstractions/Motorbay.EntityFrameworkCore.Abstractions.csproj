@@ -16,7 +16,7 @@
     <IncludeSymbols>False</IncludeSymbols>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <AssemblyVersion></AssemblyVersion>
-    <Version>1.0.0-beta.3</Version>
+    <Version>1.0.0-rc.1</Version>
     <NeutralLanguage>en</NeutralLanguage>
 	<Description>A library that provides a set of Entity Framework Core abstractions for the unit of work pattern and other commonly used features.</Description>
   </PropertyGroup>
