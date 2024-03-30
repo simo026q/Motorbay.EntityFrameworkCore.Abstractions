@@ -30,7 +30,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context, Repos
 
         return entity is not null
             ? RepositoryResult<TEntity>.Success(entity)
-            : RepositoryResult<TEntity>.Failure(ErrorDescriptor.EntityNotFound<TKey, TEntity>(id));
+            : RepositoryResult<TEntity>.Failure(ErrorDescriptor.EntityWithKeyNotFound<TKey, TEntity>(id));
     }
 
     /// <inheritdoc />
@@ -91,7 +91,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context, Repos
 
         if (entity is null)
         {
-            return RepositoryResult.Failure(ErrorDescriptor.EntityNotFound<TKey, TEntity>(id));
+            return RepositoryResult.Failure(ErrorDescriptor.EntityWithKeyNotFound<TKey, TEntity>(id));
         }
 
         return await DeleteAsync(entity, cancellationToken);
@@ -142,7 +142,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context, Repos
             }
             else
             {
-                errors.Add(ErrorDescriptor.EntityNotFound<TKey, TEntity>(id));
+                errors.Add(ErrorDescriptor.EntityWithKeyNotFound<TKey, TEntity>(id));
             }
 
             totalCount++;

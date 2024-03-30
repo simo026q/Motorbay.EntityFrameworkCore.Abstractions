@@ -38,6 +38,6 @@ public abstract class ReadOnlyDatabaseRepository<TKey, TEntity>(DbContext contex
 
         return entity is not null
             ? RepositoryResult<TEntity>.Success(entity)
-            : RepositoryResult<TEntity>.Failure(ErrorDescriptor.EntityNotFound<TKey, TEntity>(id));
+            : RepositoryResult<TEntity>.Failure(ErrorDescriptor.EntityWithKeyNotFound<TKey, TEntity>(id));
     }
 }

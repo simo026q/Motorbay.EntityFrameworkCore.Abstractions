@@ -63,9 +63,9 @@ namespace Motorbay.EntityFrameworkCore.Abstractions {
         /// <summary>
         ///   Looks up a localized string similar to Entity of type &apos;{0}&apos; with key &apos;{1}&apos; was not found..
         /// </summary>
-        internal static string EntityNotFound {
+        internal static string EntityWithKeyNotFound {
             get {
-                return ResourceManager.GetString("EntityNotFound", resourceCulture);
+                return ResourceManager.GetString("EntityWithKeyNotFound", resourceCulture);
             }
         }
         

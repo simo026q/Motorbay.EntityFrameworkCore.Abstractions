@@ -14,13 +14,13 @@ public class RepositoryErrorDescriptor
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <param name="key">The key of the entity that was not found.</param>
     /// <returns>A new EntityNotFound <see cref="RepositoryError"/>.</returns>
-    public RepositoryError EntityNotFound<TKey, TEntity>(TKey key)
+    public RepositoryError EntityWithKeyNotFound<TKey, TEntity>(TKey key)
         where TKey : IEquatable<TKey>
         where TEntity : class, IUniqueEntity<TKey>
     {
         return new RepositoryError(
-            nameof(EntityNotFound), 
-            string.Format(Resources.EntityNotFound, typeof(TEntity).Name, key)
+            nameof(EntityWithKeyNotFound), 
+            string.Format(Resources.EntityWithKeyNotFound, typeof(TEntity).Name, key)
         );
     }
 
