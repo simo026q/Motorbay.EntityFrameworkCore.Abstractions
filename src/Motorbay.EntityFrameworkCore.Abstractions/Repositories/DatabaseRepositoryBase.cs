@@ -8,11 +8,17 @@ namespace Motorbay.EntityFrameworkCore.Abstractions.Repositories;
 /// <typeparam name="TKey">The type of the unique identifier.</typeparam>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <param name="context">The <see cref="DbContext"/> to use.</param>
-public abstract class DatabaseRepositoryBase<TKey, TEntity>(DbContext context)
+/// <param name="errorDescriptor">The <see cref="RepositoryErrorDescriptor"/> to use.</param>
+public abstract class DatabaseRepositoryBase<TKey, TEntity>(DbContext context, RepositoryErrorDescriptor? errorDescriptor = null)
     where TKey : IEquatable<TKey>
     where TEntity : class, IUniqueEntity<TKey>
 {
     private readonly DbContext _context = context;
+
+    /// <summary>
+    /// The <see cref="RepositoryErrorDescriptor"/> to use.
+    /// </summary>
+    protected RepositoryErrorDescriptor ErrorDescriptor { get; } = errorDescriptor ?? new();
 
     /// <summary>
     /// The <see cref="DbSet{TEntity}"/> of the entity.
@@ -46,11 +52,11 @@ public abstract class DatabaseRepositoryBase<TKey, TEntity>(DbContext context)
 
             if (written == 0)
             {
-                return RepositoryResult.Failure(RepositoryErrorDescriptor.NothingWrittenToDatabase());
+                return RepositoryResult.Failure(ErrorDescriptor.NothingWrittenToDatabase());
             }
             else if (written != expectedWritten)
             {
-                return RepositoryResult.Failure(RepositoryErrorDescriptor.UnexpectedDatabaseWriteCount(expectedWritten, written));
+                return RepositoryResult.Failure(ErrorDescriptor.UnexpectedDatabaseWriteCount(expectedWritten, written));
             }
             else
             {
@@ -59,7 +65,7 @@ public abstract class DatabaseRepositoryBase<TKey, TEntity>(DbContext context)
         }
         catch (DbUpdateException ex)
         {
-            return RepositoryResult.Failure(RepositoryErrorDescriptor.DatabaseUpdateFailure(ex));
+            return RepositoryResult.Failure(ErrorDescriptor.DatabaseUpdateFailure(ex));
         }
     }
 }
