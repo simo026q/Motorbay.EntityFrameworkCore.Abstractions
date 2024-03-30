@@ -3,8 +3,8 @@
 namespace Motorbay.EntityFrameworkCore.Abstractions.Repositories;
 
 /// <inheritdoc />
-public abstract class ReadOnlyDatabaseRepository<TKey, TEntity>(DbContext context)
-    : DatabaseRepositoryBase<TKey, TEntity>(context), IReadOnlyRepository<TKey, TEntity>
+public abstract class ReadOnlyDatabaseRepository<TKey, TEntity>(DbContext context, RepositoryErrorDescriptor? errorDescriptor = null)
+    : DatabaseRepositoryBase<TKey, TEntity>(context, errorDescriptor), IReadOnlyRepository<TKey, TEntity>
     where TKey : IEquatable<TKey>
     where TEntity : class, IUniqueEntity<TKey>
 {
@@ -38,6 +38,6 @@ public abstract class ReadOnlyDatabaseRepository<TKey, TEntity>(DbContext contex
 
         return entity is not null
             ? RepositoryResult<TEntity>.Success(entity)
-            : RepositoryResult<TEntity>.Failure(RepositoryErrorDescriptor.EntityNotFound<TKey, TEntity>(id));
+            : RepositoryResult<TEntity>.Failure(ErrorDescriptor.EntityWithKeyNotFound<TKey, TEntity>(id));
     }
 }
