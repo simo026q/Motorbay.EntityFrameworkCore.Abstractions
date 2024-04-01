@@ -21,6 +21,11 @@ public sealed class RepositoryResult<T>
     }
 
     /// <summary>
+    /// Gets the value of <typeparamref name="T"/> returned by the operation if it was successful; otherwise, <see langword="null"/>.
+    /// </summary>
+    public T? GetValueOrDefault() => _value;
+
+    /// <summary>
     /// Creates a new <see cref="RepositoryResult{T}"/> representing a successful operation.
     /// </summary>
     /// <param name="value">The value returned by the operation.</param>
@@ -59,5 +64,5 @@ public sealed class RepositoryResult<T>
     /// Explicitly converts a <see cref="RepositoryResult{T}"/> to its value.
     /// </summary>
     /// <param name="result">Returns the <see cref="Value"/> of the operation if it was successful; otherwise, <see langword="null"/>.</param>
-    public static explicit operator T?(RepositoryResult<T> result) => result._value;
+    public static explicit operator T?(RepositoryResult<T> result) => result.GetValueOrDefault();
 }
