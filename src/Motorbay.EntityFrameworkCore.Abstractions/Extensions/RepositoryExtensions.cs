@@ -55,7 +55,7 @@ public static class RepositoryExtensions
 
         RepositoryResult<TEntity> getByIdResult = await repository.GetByIdAsync(key, cancellationToken);
 
-        if (getByIdResult.Succeeded)
+        if (getByIdResult.IsSuccessful)
         {
             return getByIdResult;
         }
@@ -64,7 +64,7 @@ public static class RepositoryExtensions
 
         RepositoryResult createResult = await repository.CreateAsync(entity, cancellationToken);
 
-        return createResult.Succeeded 
+        return createResult.IsSuccessful 
             ? RepositoryResult<TEntity>.Success(entity) 
             : RepositoryResult<TEntity>.Failure(createResult.Errors);
     }
