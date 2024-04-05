@@ -8,7 +8,7 @@ public class RepositoryResult
     /// <summary>
     /// Represents an empty collection of errors.
     /// </summary>
-    protected static readonly IReadOnlyCollection<RepositoryError> EmptyErrors = [];
+    internal static readonly IReadOnlyCollection<RepositoryError> EmptyErrors = [];
 
     /// <summary>
     /// Represents a successful operation without errors.
