@@ -8,7 +8,7 @@ public class RepositoryResult
     /// <summary>
     /// Represents an empty collection of errors.
     /// </summary>
-    protected static readonly IReadOnlyCollection<RepositoryError> EmptyErrors = [];
+    internal static readonly IReadOnlyCollection<RepositoryError> EmptyErrors = [];
 
     /// <summary>
     /// Represents a successful operation without errors.
@@ -26,9 +26,9 @@ public class RepositoryResult
     public IReadOnlyCollection<RepositoryError> Errors { get; }
 
     /// <summary>
-    /// Indicates whether the operation was successful.
+    /// Indicates whether the operation is successful.
     /// </summary>
-    public bool Succeeded => State == RepositoryResultState.Success;
+    public bool IsSuccessful => State == RepositoryResultState.Success;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RepositoryResult"/> class.

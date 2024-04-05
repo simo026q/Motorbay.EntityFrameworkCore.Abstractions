@@ -38,7 +38,7 @@ public class ReadOnlyDatabaseRepositoryTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.True(result.Succeeded);
+        Assert.True(result.IsSuccessful);
         Assert.Equal(entity, result.Value);
     }
 
@@ -54,7 +54,7 @@ public class ReadOnlyDatabaseRepositoryTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.False(result.Succeeded);
+        Assert.False(result.IsSuccessful);
         Assert.Equal(RepositoryResultState.Failure, result.State);
         Assert.Throws<InvalidOperationException>(() => _ = result.Value);
     }
@@ -75,7 +75,7 @@ public class ReadOnlyDatabaseRepositoryTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.True(result.Succeeded);
+        Assert.True(result.IsSuccessful);
         Assert.NotEmpty(result.Value);
         Assert.Equal(2, result.Value.Count);
     }
@@ -91,7 +91,7 @@ public class ReadOnlyDatabaseRepositoryTests
 
         // Assert
         Assert.NotNull(result);
-        Assert.True(result.Succeeded);
+        Assert.True(result.IsSuccessful);
         Assert.Empty(result.Value);
     }
 
