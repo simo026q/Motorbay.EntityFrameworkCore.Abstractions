@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Motorbay.EntityFrameworkCore.Abstractions.Extensions;
 
 namespace Motorbay.EntityFrameworkCore.Abstractions.Repositories;
 
