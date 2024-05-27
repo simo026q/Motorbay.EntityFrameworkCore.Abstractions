@@ -42,18 +42,6 @@ public class RepositoryResult
     }
 
     /// <summary>
-    /// Combines the current result with another, aggregating their states and errors.
-    /// </summary>
-    /// <param name="other">The other repository result to combine with this one.</param>
-    /// <returns>A new <see cref="RepositoryResult"/> reflecting the combination of both results.</returns>
-    public RepositoryResult Aggregate(RepositoryResult other)
-    {
-        var state = (RepositoryResultState)Math.Max((int)State, (int)other.State);
-
-        return new RepositoryResult(state, [..Errors.Concat(other.Errors)]);
-    }
-
-    /// <summary>
     /// Creates a new <see cref="RepositoryResult"/> representing a failed operation.
     /// </summary>
     /// <param name="errors">A collection of <see cref="RepositoryError"/> encountered during the operation.</param>
