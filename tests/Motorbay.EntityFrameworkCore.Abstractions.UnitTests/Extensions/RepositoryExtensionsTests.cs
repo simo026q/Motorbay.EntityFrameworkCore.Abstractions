@@ -5,7 +5,7 @@ using Motorbay.EntityFrameworkCore.Abstractions.UnitTests.Repositories;
 
 namespace Motorbay.EntityFrameworkCore.Abstractions.UnitTests.Extensions;
 
-public class ResponsitoryExtensionsTests
+public class RepositoryExtensionsTests
 {
     private class GuidUniqueEntityRepository(TestDbContext dbContext)
         : DatabaseRepository<Guid, GuidUniqueEntity>(dbContext)
@@ -15,10 +15,10 @@ public class ResponsitoryExtensionsTests
     private readonly TestDbContext _dbContext;
     private readonly GuidUniqueEntityRepository _guidUniqueEntityRepository;
 
-    public ResponsitoryExtensionsTests()
+    public RepositoryExtensionsTests()
     {
         DbContextOptions options = new DbContextOptionsBuilder()
-            .UseInMemoryDatabase(nameof(ResponsitoryExtensionsTests))
+            .UseInMemoryDatabase(nameof(RepositoryExtensionsTests))
         .Options;
 
         _dbContext = new TestDbContext(options);
