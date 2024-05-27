@@ -14,7 +14,7 @@ public sealed class RepositoryResult<T>
     /// <exception cref="InvalidOperationException">Thrown when the operation was unsuccessful.</exception>
     public T Value => _value ?? throw new InvalidOperationException("The operation was unsuccessful.");
 
-    private RepositoryResult(RepositoryResultState state, IReadOnlyCollection<RepositoryError> errors, T? value)
+    internal RepositoryResult(RepositoryResultState state, IReadOnlyCollection<RepositoryError> errors, T? value)
         : base(state, errors)
     {
         _value = value;
