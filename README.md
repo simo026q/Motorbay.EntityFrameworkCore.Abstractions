@@ -46,7 +46,7 @@ public class MyRepositoryErrorDescriptor
 }
 ```
 
-This can be passed into the contructor of the `DatabaseRepository` or `ReadOnlyDatabaseRepository` class or registered as a singleton in the DI container.
+This can be passed into the constructor of the `DatabaseRepository` or `ReadOnlyDatabaseRepository` class or registered as a singleton in the DI container.
 
 #### Repository
 
@@ -100,6 +100,9 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 });
 
 builder.Services.AddScoped<IMyEntityRepository, MyEntityRepository>();
+
+// OPTIONAL: Register the custom error descriptor
+builder.Services.AddSingleton<MyRepositoryErrorDescriptor>();
 ```
 
 ### TimestampedEntity Example
@@ -111,8 +114,8 @@ public class MyTimestampedEntity
 {
 	public long Id { get; set; }
 	public string Name { get; set; }
-	public DateTime CreatedAt { get; set; }
-	public DateTime UpdatedAt { get; set; }
+	public DateTimeOffset CreatedAt { get; set; }
+	public DateTimeOffset UpdatedAt { get; set; }
 }
 ```
 
@@ -137,9 +140,9 @@ public class MyDbContext
 		});
 	}
 
-	protected override void UpdateTimestamps(DateTimeOffset date) // Optional
+	protected override void UpdateTimestamps(DateTimeOffset date)
 	{
-		// Override update behavior.
+		// OPTIONAL: Override the default update behavior.
 	}
 }
 ```
