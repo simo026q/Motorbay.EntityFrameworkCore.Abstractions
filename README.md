@@ -24,9 +24,9 @@ public class MyEntity
 }
 ```
 
-#### Extend RepositoryErrorDescriptor
+#### Extend RepositoryErrorDescriptor (OPTIONAL)
 
-You can extend the `RepositoryErrorDescriptor` class to add custom error codes.
+You can extend the `RepositoryErrorDescriptor` class to add custom error codes or override the existing errors.
 
 ```csharp
 public class MyRepositoryErrorDescriptor
@@ -46,7 +46,7 @@ public class MyRepositoryErrorDescriptor
 }
 ```
 
-This can be passed into the constructor of the `DatabaseRepository` or `ReadOnlyDatabaseRepository` class or registered as a singleton in the DI container.
+This can be passed into the constructor of the `DatabaseRepository<TKey, TEntity, TErrorDescriptor>` or `ReadOnlyDatabaseRepository<TKey, TEntity, TErrorDescriptor>` class or registered as a singleton in the DI container.
 
 #### Repository
 
@@ -54,7 +54,7 @@ You can create a repository by inheriting from `DatabaseRepository<TEntity, TKey
 
 ```csharp
 public class MyEntityRepository
-	: DatabaseRepository<MyEntity, long>, IMyEntityRepository
+	: DatabaseRepository<MyEntity, long, MyRepositoryErrorDescriptor>, IMyEntityRepository
 {
 	public MyEntityRepository(MyDbContext context, MyRepositoryErrorDescriptor errorDescriptor)
 		: base(context, errorDescriptor)
@@ -72,7 +72,7 @@ public class MyEntityRepository
 
 	public Task<RepositoryResult<MyEntity>> GetByNameAsync(string name, CancellationToken cancellationToken = default)
 	{
-		return GetByNameAsync(name, isTracked: false, cancellationToken); // Default to not tracking
+		return GetByNameAsync(name, isTracked: false, cancellationToken); // Default to no tracking
 	}
 
 	// Add more custom methods here...
@@ -110,10 +110,8 @@ builder.Services.AddSingleton<MyRepositoryErrorDescriptor>();
 #### Model
 ```csharp
 public class MyTimestampedEntity
-	: ITimestampedEntity, IUniqueEntity<long>
+	: ITimestampedEntity
 {
-	public long Id { get; set; }
-	public string Name { get; set; }
 	public DateTimeOffset CreatedAt { get; set; }
 	public DateTimeOffset UpdatedAt { get; set; }
 }

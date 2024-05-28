@@ -30,39 +30,69 @@ public sealed class RepositoryResult<T>
     /// </summary>
     /// <param name="value">The value returned by the operation.</param>
     /// <returns>A new <see cref="RepositoryResult{T}"/> representing a successful operation.</returns>
-    public new static RepositoryResult<T> Success(T value) => new(RepositoryResultState.Success, EmptyErrors, value);
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
+    public new static RepositoryResult<T> Success(T value)
+    {
+        ArgumentNullException.ThrowIfNull(value, nameof(value));
+
+        return new(RepositoryResultState.Success, Array.Empty<RepositoryError>(), value);
+    }
 
     /// <summary>
     /// Creates a new <see cref="RepositoryResult{T}"/> representing a failed operation.
     /// </summary>
     /// <param name="errors">A collection of <see cref="RepositoryError"/> encountered during the operation.</param>
     /// <returns>A new <see cref="RepositoryResult{T}"/> representing a failed operation.</returns>
-    public new static RepositoryResult<T> Failure(IReadOnlyCollection<RepositoryError> errors) => new(RepositoryResultState.Failure, errors, default);
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errors"/> is <see langword="null"/>.</exception>
+    public new static RepositoryResult<T> Failure(IReadOnlyCollection<RepositoryError> errors)
+    {
+        ArgumentNullException.ThrowIfNull(errors, nameof(errors));
+
+        return new(RepositoryResultState.Failure, errors, default);
+    }
 
     /// <summary>
     /// Creates a new <see cref="RepositoryResult{T}"/> representing a failed operation.
     /// </summary>
     /// <param name="error">The <see cref="RepositoryError"/> encountered during the operation.</param>
     /// <returns>A new <see cref="RepositoryResult{T}"/> representing a failed operation.</returns>
-    public new static RepositoryResult<T> Failure(RepositoryError error) => Failure([error]);
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="error"/> is <see langword="null"/>.</exception>
+    public new static RepositoryResult<T> Failure(RepositoryError error)
+    {
+        ArgumentNullException.ThrowIfNull(error, nameof(error));
+
+        return Failure([error]);
+    }
 
     /// <summary>
     /// Creates a new <see cref="RepositoryResult{T}"/> representing a partially successful operation.
     /// </summary>
     /// <param name="errors">A collection of <see cref="RepositoryError"/> encountered during the operation.</param>
     /// <returns>A new <see cref="RepositoryResult{T}"/> representing a failed operation.</returns>
-    public new static RepositoryResult<T> PartialSuccess(IReadOnlyCollection<RepositoryError> errors) => new(RepositoryResultState.PartialSuccess, errors, default);
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errors"/> is <see langword="null"/>.</exception>
+    public new static RepositoryResult<T> PartialSuccess(IReadOnlyCollection<RepositoryError> errors)
+    {
+        ArgumentNullException.ThrowIfNull(errors, nameof(errors));
+
+        return new(RepositoryResultState.PartialSuccess, errors, default);
+    }
 
     /// <summary>
     /// Creates a new <see cref="RepositoryResult{T}"/> representing a partially successful operation.
     /// </summary>
     /// <param name="error">The <see cref="RepositoryError"/> encountered during the operation.</param>
     /// <returns>A new <see cref="RepositoryResult{T}"/> representing a failed operation.</returns>
-    public new static RepositoryResult<T> PartialSuccess(RepositoryError error) => new(RepositoryResultState.PartialSuccess, [error], default);
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="error"/> is <see langword="null"/>.</exception>
+    public new static RepositoryResult<T> PartialSuccess(RepositoryError error)
+    {
+        ArgumentNullException.ThrowIfNull(error, nameof(error));
+
+        return PartialSuccess([error]);
+    }
 
     /// <summary>
-    /// Explicitly converts a <see cref="RepositoryResult{T}"/> to its value.
+    /// Implicitly converts a <see cref="RepositoryResult{T}"/> to its value.
     /// </summary>
     /// <param name="result">Returns the <see cref="Value"/> of the operation if it was successful; otherwise, <see langword="null"/>.</param>
-    public static explicit operator T?(RepositoryResult<T> result) => result.GetValueOrDefault();
+    public static implicit operator T?(RepositoryResult<T> result) => result.GetValueOrDefault();
 }

@@ -6,14 +6,9 @@
 public class RepositoryResult
 {
     /// <summary>
-    /// Represents an empty collection of errors.
-    /// </summary>
-    internal static readonly IReadOnlyCollection<RepositoryError> EmptyErrors = [];
-
-    /// <summary>
     /// Represents a successful operation without errors.
     /// </summary>
-    public static readonly RepositoryResult Success = new(RepositoryResultState.Success, EmptyErrors);
+    public static readonly RepositoryResult Success = new(RepositoryResultState.Success, Array.Empty<RepositoryError>());
 
     /// <summary>
     /// The state of the repository operation.
@@ -46,28 +41,52 @@ public class RepositoryResult
     /// </summary>
     /// <param name="errors">A collection of <see cref="RepositoryError"/> encountered during the operation.</param>
     /// <returns>A new <see cref="RepositoryResult"/> representing a failed operation.</returns>
-    public static RepositoryResult Failure(IReadOnlyCollection<RepositoryError> errors) => new(RepositoryResultState.Failure, errors);
-    
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errors"/> is <see langword="null"/>.</exception>
+    public static RepositoryResult Failure(IReadOnlyCollection<RepositoryError> errors)
+    {
+        ArgumentNullException.ThrowIfNull(errors, nameof(errors));
+
+        return new(RepositoryResultState.Failure, errors);
+    }
+
     /// <summary>
     /// Creates a new <see cref="RepositoryResult"/> representing a failed operation.
     /// </summary>
     /// <param name="error">The <see cref="RepositoryError"/> encountered during the operation.</param>
     /// <returns>A new <see cref="RepositoryResult"/> representing a failed operation.</returns>
-    public static RepositoryResult Failure(RepositoryError error) => Failure([error]);
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="error"/> is <see langword="null"/>.</exception>"
+    public static RepositoryResult Failure(RepositoryError error)
+    {
+        ArgumentNullException.ThrowIfNull(error, nameof(error));
+
+        return Failure([error]);
+    }
 
     /// <summary>
     /// Creates a new <see cref="RepositoryResult"/> representing a partially successful operation.
     /// </summary>
     /// <param name="errors">A collection of <see cref="RepositoryError"/> encountered during the operation.</param>
     /// <returns>A new <see cref="RepositoryResult"/> representing a failed operation.</returns>
-    public static RepositoryResult PartialSuccess(IReadOnlyCollection<RepositoryError> errors) => new(RepositoryResultState.PartialSuccess, errors);
-    
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="errors"/> is <see langword="null"/>.</exception>
+    public static RepositoryResult PartialSuccess(IReadOnlyCollection<RepositoryError> errors)
+    {
+        ArgumentNullException.ThrowIfNull(errors, nameof(errors));
+
+        return new(RepositoryResultState.PartialSuccess, errors);
+    }
+
     /// <summary>
     /// Creates a new <see cref="RepositoryResult"/> representing a partially successful operation.
     /// </summary>
     /// <param name="error">The <see cref="RepositoryError"/> encountered during the operation.</param>
     /// <returns>A new <see cref="RepositoryResult"/> representing a failed operation.</returns>
-    public static RepositoryResult PartialSuccess(RepositoryError error) => new(RepositoryResultState.PartialSuccess, [error]);
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="error"/> is <see langword="null"/>.</exception>"
+    public static RepositoryResult PartialSuccess(RepositoryError error)
+    {
+        ArgumentNullException.ThrowIfNull(error, nameof(error));
+
+        return PartialSuccess([error]);
+    }
 
     /// <summary>
     /// Returns a string representation of the <see cref="RepositoryResult"/>.

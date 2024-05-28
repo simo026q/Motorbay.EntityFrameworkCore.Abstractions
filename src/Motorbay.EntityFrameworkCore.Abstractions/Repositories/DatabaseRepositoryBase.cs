@@ -7,18 +7,20 @@ namespace Motorbay.EntityFrameworkCore.Abstractions.Repositories;
 /// </summary>
 /// <typeparam name="TKey">The type of the unique identifier.</typeparam>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
+/// <typeparam name="TErrorDescriptor">The type of the <see cref="RepositoryErrorDescriptor"/> to use.</typeparam>
 /// <param name="context">The <see cref="DbContext"/> to use.</param>
 /// <param name="errorDescriptor">The <see cref="RepositoryErrorDescriptor"/> to use.</param>
-public abstract class DatabaseRepositoryBase<TKey, TEntity>(DbContext context, RepositoryErrorDescriptor? errorDescriptor = null)
+public abstract class DatabaseRepositoryBase<TKey, TEntity, TErrorDescriptor>(DbContext context, TErrorDescriptor errorDescriptor)
     where TKey : IEquatable<TKey>
     where TEntity : class, IUniqueEntity<TKey>
+    where TErrorDescriptor : RepositoryErrorDescriptor
 {
     private readonly DbContext _context = context;
 
     /// <summary>
     /// The <see cref="RepositoryErrorDescriptor"/> to use.
     /// </summary>
-    protected RepositoryErrorDescriptor ErrorDescriptor { get; } = errorDescriptor ?? new();
+    protected TErrorDescriptor ErrorDescriptor { get; } = errorDescriptor;
 
     /// <summary>
     /// The <see cref="DbSet{TEntity}"/> of the entity.
