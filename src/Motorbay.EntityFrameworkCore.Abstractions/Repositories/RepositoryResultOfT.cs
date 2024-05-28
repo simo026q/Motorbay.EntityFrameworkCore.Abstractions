@@ -61,8 +61,8 @@ public sealed class RepositoryResult<T>
     public new static RepositoryResult<T> PartialSuccess(RepositoryError error) => new(RepositoryResultState.PartialSuccess, [error], default);
 
     /// <summary>
-    /// Explicitly converts a <see cref="RepositoryResult{T}"/> to its value.
+    /// Implicitly converts a <see cref="RepositoryResult{T}"/> to its value.
     /// </summary>
     /// <param name="result">Returns the <see cref="Value"/> of the operation if it was successful; otherwise, <see langword="null"/>.</param>
-    public static explicit operator T?(RepositoryResult<T> result) => result.GetValueOrDefault();
+    public static implicit operator T?(RepositoryResult<T> result) => result.GetValueOrDefault();
 }

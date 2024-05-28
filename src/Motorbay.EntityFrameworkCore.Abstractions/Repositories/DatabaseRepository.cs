@@ -27,7 +27,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context, Repos
 
         TEntity? entity = isTracked
             ? await Entities.FindAsync([id], cancellationToken)
-            : await GetQueryable(isTracked: false).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
+            : await GetQueryable(isTracked).FirstOrDefaultAsync(e => e.Id.Equals(id), cancellationToken);
 
         return entity is not null
             ? RepositoryResult<TEntity>.Success(entity)
@@ -88,7 +88,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context, Repos
     {
         ArgumentNullException.ThrowIfNull(id, nameof(id));
 
-        var entity = (TEntity?)await GetByIdAsync(id, isTracked: true, cancellationToken);
+        TEntity? entity = await GetByIdAsync(id, isTracked: true, cancellationToken);
 
         if (entity is null)
         {
@@ -134,7 +134,7 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context, Repos
         int totalCount = 0;
         foreach (TKey id in ids)
         {
-            var entity = (TEntity?)await GetByIdAsync(id, isTracked: true, cancellationToken);
+            TEntity? entity = await GetByIdAsync(id, isTracked: true, cancellationToken);
 
             if (entity is not null)
             {
