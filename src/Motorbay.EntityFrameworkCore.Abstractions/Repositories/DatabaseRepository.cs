@@ -5,9 +5,18 @@ namespace Motorbay.EntityFrameworkCore.Abstractions.Repositories;
 
 /// <inheritdoc />
 public abstract class DatabaseRepository<TKey, TEntity>(DbContext context, RepositoryErrorDescriptor? errorDescriptor = null)
-    : ReadOnlyDatabaseRepository<TKey, TEntity>(context, errorDescriptor), IRepository<TKey, TEntity>
+    : DatabaseRepository<TKey, TEntity, RepositoryErrorDescriptor>(context, errorDescriptor ?? new()), IRepository<TKey, TEntity>
     where TKey : IEquatable<TKey>
     where TEntity : class, IUniqueEntity<TKey>
+{
+}
+
+/// <inheritdoc />
+public abstract class DatabaseRepository<TKey, TEntity, TErrorDescriptor>(DbContext context, TErrorDescriptor errorDescriptor)
+    : ReadOnlyDatabaseRepository<TKey, TEntity, TErrorDescriptor>(context, errorDescriptor), IRepository<TKey, TEntity>
+    where TKey : IEquatable<TKey>
+    where TEntity : class, IUniqueEntity<TKey>
+    where TErrorDescriptor : RepositoryErrorDescriptor
 {
     /// <inheritdoc />
     /// <exception cref="OperationCanceledException">The <paramref name="cancellationToken"/> was cancelled.</exception>

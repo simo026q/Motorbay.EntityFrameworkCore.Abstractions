@@ -14,7 +14,7 @@ public class RepositoryErrorDescriptor
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <param name="key">The key of the entity that was not found.</param>
     /// <returns>A new EntityNotFound <see cref="RepositoryError"/>.</returns>
-    public RepositoryError EntityWithKeyNotFound<TKey, TEntity>(TKey key)
+    public virtual RepositoryError EntityWithKeyNotFound<TKey, TEntity>(TKey key)
         where TKey : IEquatable<TKey>
         where TEntity : class, IUniqueEntity<TKey>
     {
@@ -28,7 +28,7 @@ public class RepositoryErrorDescriptor
     /// Creates a new NothingWrittenToDatabase <see cref="RepositoryError"/>.
     /// </summary>
     /// <returns>A new NothingWrittenToDatabase <see cref="RepositoryError"/>.</returns>
-    public RepositoryError NothingWrittenToDatabase()
+    public virtual RepositoryError NothingWrittenToDatabase()
     {
         return new RepositoryError(
             nameof(NothingWrittenToDatabase),
@@ -42,7 +42,7 @@ public class RepositoryErrorDescriptor
     /// <param name="expected">The expected number of entities written to the database.</param>
     /// <param name="written">The actual number of entities written to the database.</param>
     /// <returns>A new UnexpectedDatabaseWriteCount <see cref="RepositoryError"/>.</returns>
-    public RepositoryError UnexpectedDatabaseWriteCount(int expected, int written)
+    public virtual RepositoryError UnexpectedDatabaseWriteCount(int expected, int written)
     {
         return new RepositoryError(
             nameof(UnexpectedDatabaseWriteCount),
@@ -55,7 +55,7 @@ public class RepositoryErrorDescriptor
     /// </summary>
     /// <param name="exception">The <see cref="DbUpdateConcurrencyException"/> that occurred.</param>
     /// <returns>A new DatabaseConcurrencyFailure <see cref="RepositoryError"/>.</returns>
-    public RepositoryError DatabaseConcurrencyFailure(DbUpdateConcurrencyException exception)
+    public virtual RepositoryError DatabaseConcurrencyFailure(DbUpdateConcurrencyException exception)
     {
         return new RepositoryError(
             nameof(DatabaseConcurrencyFailure),
@@ -70,7 +70,7 @@ public class RepositoryErrorDescriptor
     /// <param name="exception">The <see cref="DbUpdateException"/> that occurred.</param>
     /// <returns>A new DatabaseUpdateFailure <see cref="RepositoryError"/>.</returns>
     /// <remarks>If the <paramref name="exception"/> is a <see cref="DbUpdateConcurrencyException"/>, this method will return a <see cref="DatabaseConcurrencyFailure"/> error.</remarks>
-    public RepositoryError DatabaseUpdateFailure(DbUpdateException exception)
+    public virtual RepositoryError DatabaseUpdateFailure(DbUpdateException exception)
     {
         if (exception is DbUpdateConcurrencyException concurrencyException)
         {
