@@ -95,6 +95,8 @@ public abstract class DatabaseRepository<TKey, TEntity, TErrorDescriptor>(DbCont
     /// <exception cref="ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
     public virtual async Task<RepositoryResult> DeleteByIdAsync(TKey id, CancellationToken cancellationToken = default)
     {
+        // Note: Should probably use ExecuteDeleteAsync to delete the entity, however this requires manually updating the ChangeTracker which is not ideal.
+
         ArgumentNullException.ThrowIfNull(id, nameof(id));
 
         TEntity? entity = await GetByIdAsync(id, isTracked: true, cancellationToken);
@@ -120,6 +122,7 @@ public abstract class DatabaseRepository<TKey, TEntity, TErrorDescriptor>(DbCont
             return SaveChangesAsync(expectedWritten: collection.Count, cancellationToken);
         }
 
+        // This is the most efficient way to delete a range of entities and get the count. RemoveRange is not that much more performant than calling Remove on each entity.
         int count = 0;
         foreach (TEntity entity in entities)
         {
