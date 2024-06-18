@@ -26,6 +26,11 @@ public class RepositoryResult
     public bool IsSuccessful => State == RepositoryResultState.Success;
 
     /// <summary>
+    /// Indicates whether the operation has failed.
+    /// </summary>
+    public bool HasFailed => State == RepositoryResultState.Failure;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="RepositoryResult"/> class.
     /// </summary>
     /// <param name="state">The state of the repository operation.</param>
