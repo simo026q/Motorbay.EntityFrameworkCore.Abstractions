@@ -1,4 +1,5 @@
 ﻿using Motorbay.EntityFrameworkCore.Abstractions.Repositories;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Motorbay.EntityFrameworkCore.Abstractions.Extensions;
 
@@ -41,4 +42,21 @@ public static class RepositoryResultExtensions
             _ => throw new InvalidOperationException("Unknown repository result state."),
         };
     }
+
+    /// <summary>
+    /// Determines whether the repository result has errors.
+    /// </summary>
+    /// <param name="repositoryResult">The repository result to check for errors.</param>
+    /// <returns><see langword="true"/> if the repository result has errors; otherwise, <see langword="false"/>.</returns>
+    public static bool HasErrors(this RepositoryResult repositoryResult) 
+        => repositoryResult.Errors.Count != 0;
+
+    /// <summary>
+    /// Determines whether the repository result has a specific error.
+    /// </summary>
+    /// <param name="repositoryResult">The repository result to check for the error.</param>
+    /// <param name="errorCode">The error code to check for.</param>
+    /// <returns><see langword="true"/> if the repository result has the specific error; otherwise, <see langword="false"/>.</returns>
+    public static bool HasError(this RepositoryResult repositoryResult, string errorCode) 
+        => repositoryResult.Errors.Any(error => error.Code == errorCode);
 }
