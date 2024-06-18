@@ -28,13 +28,14 @@ public static class RepositoryResultExtensions
     /// <param name="value">The value to return in the new repository result.</param>
     /// <returns>A new <see cref="RepositoryResult{T}"/> with the same state as <paramref name="repositoryResult"/>.</returns>
     /// <exception cref="InvalidOperationException">The repository result state is unknown.</exception>
+    /// <exception cref="ArgumentNullException">The <paramref name="value"/> is <see langword="null"/> when the <paramref name="repositoryResult"/> is <see cref="RepositoryResultState.Success"/>.</exception>
     /// <remarks> The returned <see cref="RepositoryResult{T}"/> will only contain the value if the state is <see cref="RepositoryResultState.Success"/>.</remarks>
-    public static RepositoryResult<T> WithValue<T>(this RepositoryResult repositoryResult, T value)
+    public static RepositoryResult<T> WithValue<T>(this RepositoryResult repositoryResult, T? value)
         where T : class
     {
         return repositoryResult.State switch
         {
-            RepositoryResultState.Success => RepositoryResult<T>.Success(value),
+            RepositoryResultState.Success => RepositoryResult<T>.Success(value ?? throw new ArgumentNullException(nameof(value), "The value cannot be null when the operation is successful")),
             RepositoryResultState.Failure => RepositoryResult<T>.Failure(repositoryResult.Errors),
             RepositoryResultState.PartialSuccess => RepositoryResult<T>.PartialSuccess(repositoryResult.Errors),
             _ => throw new InvalidOperationException("Unknown repository result state."),
