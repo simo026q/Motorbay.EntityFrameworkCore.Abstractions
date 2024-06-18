@@ -1,31 +1,40 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Motorbay.EntityFrameworkCore.Abstractions.Contexts;
 
 /// <summary>
-/// Base class for database contexts that automatically update timestamps.
+/// Base class for database contexts that automatically update timestamps on entities that implement <see cref="ITimestampedEntity"/>.
 /// </summary>
 /// <inheritdoc />
 public abstract class TimestampedDbContext 
     : DbContext
 {
-    private readonly TimeProvider _timeProvider;
+    private readonly EntityTimestampUpdater _timestampUpdater;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TimestampedDbContext"/> class.
+    /// Initializes a new instance of the <see cref="TimestampedDbContext"/> class with specified options and an entity timestamp updater.
     /// </summary>
-    /// <param name="options">The options for this context. </param>
+    /// <param name="options">The options for this context.</param>
+    /// <param name="timestampUpdater">The updater responsible for managing entity timestamps.</param>
+    protected TimestampedDbContext(DbContextOptions options, EntityTimestampUpdater timestampUpdater)
+        : base(options)
+    {
+        _timestampUpdater = timestampUpdater;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TimestampedDbContext"/> class with specified options and a time provider.
+    /// </summary>
+    /// <param name="options">The options for this context.</param>
     /// <param name="timeProvider">The time provider to use for setting timestamps.</param>
     protected TimestampedDbContext(DbContextOptions options, TimeProvider timeProvider)
         : base(options)
     {
-        SavingChanges += OnSavingChanges;
-        _timeProvider = timeProvider;
+        _timestampUpdater = new EntityTimestampUpdater(this, timeProvider);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TimestampedDbContext"/> class.
+    /// Initializes a new instance of the <see cref="TimestampedDbContext"/> class with specified options and the default system time provider.
     /// </summary>
     /// <param name="options">The options for this context.</param>
     protected TimestampedDbContext(DbContextOptions options)
@@ -33,27 +42,13 @@ public abstract class TimestampedDbContext
     {
     }
 
-    private void OnSavingChanges(object? sender, SavingChangesEventArgs e) 
-        => UpdateTimestamps(_timeProvider.GetUtcNow());
-
     /// <summary>
-    /// Updates the timestamps of entities in the context.
+    /// Obsolete method for updating timestamps of entities in the context.
     /// </summary>
     /// <param name="date">The date to set the timestamps to.</param>
+    [Obsolete("This method is obsolete and will be removed in a future version. Override UpdateTimestamps in EntityTimestampUpdater instead and inject it into the constructor.", error: true)]
     protected virtual void UpdateTimestamps(DateTimeOffset date)
     {
-        foreach (EntityEntry<ITimestampedEntity> entry in ChangeTracker.Entries<ITimestampedEntity>())
-        {
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                    entry.Entity.CreatedAt = date;
-                    entry.Entity.UpdatedAt = date;
-                    break;
-                case EntityState.Modified:
-                    entry.Entity.UpdatedAt = date;
-                    break;
-            }
-        }
+        // This method is obsolete and should not be used.
     }
 }
