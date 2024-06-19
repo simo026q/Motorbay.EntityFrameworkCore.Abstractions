@@ -118,6 +118,9 @@ public class MyTimestampedEntity
 ```
 
 #### DbContext
+
+If you inherit from `TimestampedDbContext`, the `CreatedAt` and `UpdatedAt` properties will be automatically updated when an entity that implements `ITimestampedEntity` is added or modified.
+
 ```csharp
 public class MyDbContext
 	: TimestampedDbContext
@@ -136,11 +139,6 @@ public class MyDbContext
 			entity.Property(x => x.CreatedAt).IsRequired();
 			entity.Property(x => x.UpdatedAt).IsRequired();
 		});
-	}
-
-	protected override void UpdateTimestamps(DateTimeOffset date)
-	{
-		// OPTIONAL: Override the default update behavior.
 	}
 }
 ```
