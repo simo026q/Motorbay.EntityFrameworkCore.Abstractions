@@ -4,7 +4,7 @@ namespace Motorbay.EntityFrameworkCore.Abstractions.Repositories;
 
 /// <inheritdoc />
 public abstract class ReadOnlyDatabaseRepository<TKey, TEntity>(DbContext context, RepositoryErrorDescriptor? errorDescriptor = null)
-    : DatabaseRepository<TKey, TEntity, RepositoryErrorDescriptor>(context, errorDescriptor ?? new()), IReadOnlyRepository<TKey, TEntity>
+    : ReadOnlyDatabaseRepository<TKey, TEntity, RepositoryErrorDescriptor>(context, errorDescriptor ?? new()), IReadOnlyRepository<TKey, TEntity>
     where TKey : IEquatable<TKey>
     where TEntity : class, IUniqueEntity<TKey>
 {
