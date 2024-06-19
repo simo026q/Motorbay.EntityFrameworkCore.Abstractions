@@ -10,6 +10,9 @@ public abstract class ReadOnlyDatabaseRepository<TKey, TEntity>(DbContext contex
 {
 }
 
+/// <summary>
+/// An implementation of <see cref="IReadOnlyRepository{TKey,TEntity}"/> that uses Entity Framework Core.
+/// </summary>
 /// <inheritdoc />
 public abstract class ReadOnlyDatabaseRepository<TKey, TEntity, TErrorDescriptor>(DbContext context, TErrorDescriptor errorDescriptor)
     : DatabaseRepositoryBase<TKey, TEntity, TErrorDescriptor>(context, errorDescriptor), IReadOnlyRepository<TKey, TEntity>

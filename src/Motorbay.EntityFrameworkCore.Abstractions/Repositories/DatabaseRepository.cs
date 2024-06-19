@@ -11,6 +11,9 @@ public abstract class DatabaseRepository<TKey, TEntity>(DbContext context, Repos
 {
 }
 
+/// <summary>
+/// An implementation of <see cref="IRepository{TKey,TEntity}"/> that uses Entity Framework Core.
+/// </summary>
 /// <inheritdoc />
 public abstract class DatabaseRepository<TKey, TEntity, TErrorDescriptor>(DbContext context, TErrorDescriptor errorDescriptor)
     : ReadOnlyDatabaseRepository<TKey, TEntity, TErrorDescriptor>(context, errorDescriptor), IRepository<TKey, TEntity>
